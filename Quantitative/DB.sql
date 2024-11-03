@@ -88,20 +88,6 @@ PARTITION BY RANGE(year(trade_date))
 )
 ;
 
-insert into stock_zh_a_hist_partition select * from stock_zh_a_hist;
-insert into stock_zh_a_hist_partition select * from stock_zh_a_hist_partition;
-
-select year(trade_date),count(1) from stock_zh_a_hist_partition group by 1;
-select symbol_code,year(trade_date),count(1) from stock_zh_a_hist_partition group by 1,2;
-
-du -sh /opt/192.168.*/gnode/userdata/gbase/mydb/sys_tablespace/stock_zh_a_hist_partition*
-du -s /opt/192.168.*/gnode/userdata/gbase/mydb/sys_tablespace/stock_zh_a_hist_partition* | awk '{print $1}'
-
-select * from TABLES where table_schema ='mydb' and table_name='stock_zh_a_hist_partition';
-
--- 非分区表单位KB 比较准
-gbase> select STORAGE_SIZE/1024 from TABLES where table_schema ='mydb' and table_name='stock_zh_a_hist'\G
-
 
 --04个股新闻
 DROP TABLE stock_news;
@@ -169,3 +155,17 @@ insert into stock_news2 select * from stock_news2;
 insert into stock_news2 select * from stock_news2;
 
 SELECT news_source,ROW_NUMBER() OVER (PARTITION BY news_source ORDER BY news_source DESC) FROM stock_news2 limit 20;
+
+insert into stock_zh_a_hist_partition select * from stock_zh_a_hist;
+insert into stock_zh_a_hist_partition select * from stock_zh_a_hist_partition;
+
+select year(trade_date),count(1) from stock_zh_a_hist_partition group by 1;
+select symbol_code,year(trade_date),count(1) from stock_zh_a_hist_partition group by 1,2;
+
+du -sh /opt/192.168.*/gnode/userdata/gbase/mydb/sys_tablespace/stock_zh_a_hist_partition*
+du -s /opt/192.168.*/gnode/userdata/gbase/mydb/sys_tablespace/stock_zh_a_hist_partition* | awk '{print $1}'
+
+select * from TABLES where table_schema ='mydb' and table_name='stock_zh_a_hist_partition';
+
+-- 非分区表单位KB 比较准
+gbase> select STORAGE_SIZE/1024 from TABLES where table_schema ='mydb' and table_name='stock_zh_a_hist'\G
