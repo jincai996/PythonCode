@@ -1,0 +1,122 @@
+from faker import Faker
+from datetime import datetime
+fake = Faker(locale='zh_CN')
+
+def stock_individual_info(v_trade_date,v_symbol_code,v_symbol_name,v_industry):
+    '''
+        个股信息查询
+    '''
+    trade_date=v_trade_date                     # 交易日期
+    symbol_code=v_symbol_code                   # 股票代码
+    symbol_name=v_symbol_name                   # 公司名称
+    total_share=fake.random_number(digits=8)    # 总股本
+    float_share=fake.random_number(digits=8)    # 流通股本
+    total_value=fake.pyfloat(left_digits=10,right_digits=2) # 总市值
+    industry=v_industry                         # 行业类别
+    list_date=fake.date_between(start_date='-4y', end_date='-3y')   #上市时间
+
+    return f'{trade_date}|{symbol_code}|{symbol_name}|{total_share}|{float_share}|{total_value}|{industry}|{list_date}'
+
+
+def stock_gsrl_gsdt(v_symbol_code):
+    '''
+        公司动态
+    '''
+    symbol_code=v_symbol_code       # 股票代码
+    sentence_type=fake.random_element(elements=['一般','重要','紧急','突发'])   # 事件类型
+    sentence=fake.sentence()        # 事件内容
+    sentence_date=fake.date_between(start_date='-3y', end_date='-1d')       # 事件日期
+
+    return f'{symbol_code}|{sentence_type}|{sentence}|{sentence_date}'
+
+
+def stock_yjbb_em(v_symbol_code,v_industry):
+    '''
+        业绩报表
+    '''
+    symbol_code=v_symbol_code       # 股票代码
+    diluted_eps=fake.pydecimal(left_digits=5,right_digits=2)        # 每股收益
+    n_income=fake.pydecimal(left_digits=3,right_digits=2,positive=True)      # 净利润
+    bps=fake.pydecimal(left_digits=5,right_digits=2,positive=True)      # 每股净资产
+    diluted_roe=fake.pydecimal(left_digits=0,right_digits=2)        # 净资产收益率
+    industry=v_industry    # 所处行业
+    announce_date=fake.random_element(elements=['2022-03-31','2022-06-30','2022-09-30','2020-12-31','2023-03-31','2023-06-30','2023-09-30','2020-12-31','2024-03-31','2024-06-30','2024-09-30'])    # 最新公告日期
+
+    return f'{symbol_code}|{diluted_eps}|{n_income}|{bps}|{diluted_roe}|{industry}|{announce_date}'
+
+
+def stock_zh_a_spot(v_symbol_code):
+    '''
+        实时行情数据
+    '''
+    trade_date=datetime.now().strftime('%Y-%m-%d')      # 交易日期
+    symbol_code=v_symbol_code       # 股票代码
+    curent_price=fake.pydecimal(left_digits=3,right_digits=2)    # 当前价格
+    open=fake.pydecimal(left_digits=3,right_digits=2)    # 开盘
+    close=fake.pydecimal(left_digits=3,right_digits=2)    # 收盘
+    high=fake.pydecimal(left_digits=3,right_digits=2)    # 最高
+    low=fake.pydecimal(left_digits=3,right_digits=2)    # 最低
+    volume=fake.random_int(10000,99999) # 成交量
+    amount=volume*curent_price  # 成交额
+
+    return f'{trade_date}|{symbol_code}|{curent_price}|{open}|{close}|{high}|{low}|{volume}|{amount}'
+
+
+def stock_zh_a_hist(v_trade_date,v_symbol_code):
+    '''
+        历史行情数据
+    '''
+    trade_date=v_trade_date      # 交易日期
+    symbol_code=v_symbol_code       # 股票代码
+    open=fake.pydecimal(left_digits=3,right_digits=2)    # 开盘
+    close=fake.pydecimal(left_digits=3,right_digits=2)    # 收盘
+    high=fake.pydecimal(left_digits=3,right_digits=2)    # 最高
+    low=fake.pydecimal(left_digits=3,right_digits=2)    # 最低
+    volume=fake.random_int(10000,99999) # 成交量
+    amount=volume*close  # 成交额
+    pct_chg=fake.pydecimal(left_digits=0,right_digits=2)    # 涨跌幅
+    change=fake.pydecimal(left_digits=3,right_digits=2)    # 涨跌额
+
+    return f'{trade_date}|{symbol_code}|{open}|{close}|{high}|{low}|{volume}|{amount}|{pct_chg}|{change}'
+
+
+def stock_industry_info():
+    '''
+        板块信息
+    '''
+    industry=fake.random_element(elements=['农林牧渔','采掘','水电气','建筑','地质水利','交通运输','批发和零售','餐饮','金融保险','房地产','社会服务','科教文卫','其他'])    # 板块名称
+    trade_date=fake.date_between(start_date='-3y', end_date='-1d')      # 交易日期
+    open=fake.pydecimal(left_digits=4,right_digits=2)       # 开盘
+    close=fake.pydecimal(left_digits=4,right_digits=2)      # 收盘
+    high=fake.pydecimal(left_digits=4,right_digits=2)    # 最高
+    low=fake.pydecimal(left_digits=4,right_digits=2)    # 最低
+
+    return f'{industry}|{trade_date}|{open}|{close}|{high}|{low}'
+
+
+def total():
+    v_trade_date=fake.date_between(start_date='-3y', end_date='-1d')
+    v_symbol_code=fake.random_number(digits=3)
+    v_symbol_name=fake.company()
+    v_industry=fake.random_element(elements=['农林牧渔','采掘','水电气','建筑','地质水利','交通运输','批发和零售','餐饮','金融保险','房地产','社会服务','科教文卫','其他'])
+
+    with open(file='stock_individual_info.txt',mode='a+',encoding='utf-8') as f:
+        f.write(f'{stock_individual_info(v_trade_date,v_symbol_code,v_symbol_name,v_industry)}\n')
+    
+    with open(file='stock_gsrl_gsdt.txt',mode='a+',encoding='utf-8') as f:
+        f.write(f'{stock_gsrl_gsdt(v_symbol_code)}\n')
+
+    with open(file='stock_yjbb_em.txt',mode='a+',encoding='utf-8') as f:
+        f.write(f'{stock_yjbb_em(v_symbol_code,v_industry)}\n')
+
+    with open(file='stock_zh_a_spot.txt',mode='a+',encoding='utf-8') as f:
+        f.write(f'{stock_zh_a_spot(v_symbol_code)}\n')
+
+    with open(file='stock_zh_a_hist.txt',mode='a+',encoding='utf-8') as f:
+        f.write(f'{stock_zh_a_hist(v_trade_date,v_symbol_code)}\n')
+
+    with open(file='stock_industry_info.txt',mode='a+',encoding='utf-8') as f:
+        f.write(f'{stock_industry_info()}\n')
+
+for i in range(0,100000000):
+    total()
