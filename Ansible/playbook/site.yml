@@ -1,0 +1,14 @@
+---
+- name: Change user password using expect
+  hosts: all
+  tasks:
+    # - name: Change password for user
+    #   expect:
+    #       command: passwd gbase
+    #       responses:
+    #         (?i)new password: "111111\n"
+    #         (?i)retype new password: "111111\n"
+
+    - name: Run mysql_secure_installation
+      ansible.builtin.shell: |
+        echo -e "222222\n222222" | passwd gbase

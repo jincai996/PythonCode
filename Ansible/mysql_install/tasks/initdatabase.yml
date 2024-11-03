@@ -1,0 +1,12 @@
+# Start MySQL Service
+- name: Reload MySQL Service
+  shell: /mysql/mysoft/mysql-8.4.3-linux-glibc2.28-x86_64/support-files/mysql.server restart
+  register: restart_output  # 将命令输出存储在变量中
+
+# 获取mysql初始密码
+- name: Get temporary Mysql root password
+  shell: grep password /mysql/mydata/3306/data/init.log | awk '{ print $NF }'
+  register: mysql_temporary_password  # 将命令输出存储在变量中
+- name: Print mysql_temporary_password
+  debug:
+    msg: "{{ mysql_temporary_password.stdout }}"

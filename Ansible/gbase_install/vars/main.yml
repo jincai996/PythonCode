@@ -1,0 +1,22 @@
+---
+# vars file for gbase_role
+root_os_password: '123456'
+
+gbase_os_password: 'X@gbase2018'
+
+dba_password: 'X@gbase2018'
+
+###############################
+
+installPrefix: '/opt'
+coordinateHost: '10.10.10.11,10.10.10.12,10.10.10.13'
+coordinateHostNodeID: '11,12,13'
+dataHost: '10.10.10.14,10.10.10.144,10.10.10.15,10.10.10.155'
+gcwareHost: '10.10.10.11,10.10.10.12,10.10.10.13'
+gcwareHostNodeID: '11,12,13'
+dbaPwd: 'X@gbase2018'
+characterSet: 'utf8mb4'
+
+
+###############################
+vc_name: 'sysvc'

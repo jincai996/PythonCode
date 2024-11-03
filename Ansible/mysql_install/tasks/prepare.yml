@@ -1,0 +1,28 @@
+#创建MySQL用户
+- name: Create user mysql
+  user:
+    name: mysql
+    state: present
+    expires: -1
+    password: "{{ mysql_os_password |  password_hash('sha512') }}"
+
+# 创建MySQL安装路径和数据存储
+- name: Create directory /mysql/mysoft;/mysql/mydata/3306/data
+  file:
+    path: "{{ item }}"
+    owner: mysql
+    group: mysql
+    mode: '0755'
+    state: directory
+  with_items:
+    - /mysql/mysoft
+    - /mysql/mydata/3306/data
+
+#dnf源安装
+- name: Install Package
+  dnf:
+    name:
+      - vim
+      - net-tools
+      - wget
+    state: present

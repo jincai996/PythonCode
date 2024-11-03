@@ -1,0 +1,4 @@
+- name: Reboot the system to apply SELinux changes
+  reboot:
+    msg: "Rebooting to apply SELinux changes."
+  # when: ansible_selinux.status != 'disabled'

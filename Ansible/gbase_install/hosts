@@ -1,0 +1,11 @@
+[firstcoor]
+192.168.111.21  Hostname=master01   Private_Ip=10.10.10.11
+
+[coor]
+192.168.111.21  Hostname=master01   Private_Ip=10.10.10.11
+192.168.111.22  Hostname=master02   Private_Ip=10.10.10.12
+192.168.111.23  Hostname=master03   Private_Ip=10.10.10.13
+
+[data]
+192.168.111.24  Hostname=node01 Private_Ip1=10.10.10.14 Private_Ip2=10.10.10.144
+192.168.111.25  Hostname=node02 Private_Ip1=10.10.10.15 Private_Ip2=10.10.10.155

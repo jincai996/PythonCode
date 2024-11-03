@@ -1,0 +1,70 @@
+---
+###############################
+# sudo ansible-playbook -i hosts site.yml --skip-tags XXOO
+# sudo ansible-playbook -i hosts site.yml --tags XXOO
+
+###############################
+- name: Disable SELinux
+  hosts: all
+  gather_facts: yes
+  vars_files:
+    - vars/main.yml
+  tasks:
+    - name: Disable SeLinux
+      import_tasks: tasks/selinux.yml
+  tags:
+    - selinux
+
+- name: Disable Firewalld
+  hosts: all
+  gather_facts: yes
+  vars_files:
+    - vars/main.yml
+  tasks:
+    - name: Disable Firewalld
+      import_tasks: tasks/firewalld.yml
+  tags:
+    - firewalld
+
+- name: Disable Swap Space
+  hosts: all
+  gather_facts: yes
+  vars_files:
+    - vars/main.yml
+  tasks:
+    - name: Disable Swap Space
+      import_tasks: tasks/swap.yml
+  tags:
+    - swap
+
+- name: Install and Update dnf
+  hosts: all
+  gather_facts: yes
+  vars_files:
+    - vars/main.yml
+  tasks:
+    - name: Install and Update dnf
+      import_tasks: tasks/software.yml
+  tags:
+    - software
+
+- name: Set Hostname
+  hosts: all
+  gather_facts: yes
+  vars_files:
+    - vars/main.yml
+  tasks:
+    - name: Set Hostname
+      import_tasks: tasks/hostname.yml
+  tags:
+    - hostname
+
+######################################################
+- name: Reboot
+  hosts: all
+  gather_facts: yes
+  vars_files:
+    - vars/main.yml
+  tasks:
+    - name: Reboot
+      import_tasks: tasks/reboot.yml

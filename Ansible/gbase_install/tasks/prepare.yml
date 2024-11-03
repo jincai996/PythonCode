@@ -1,0 +1,100 @@
+#创建Gbase用户
+- name: Create SSH key for user gbase in ~gbase/.ssh/id_rsa
+  user:
+    name: gbase
+    state: present
+    generate_ssh_key: yes
+    ssh_key_file: .ssh/id_rsa
+    expires: -1
+    password: "{{ gbase_os_password |  password_hash('sha512') }}"
+
+#创建SSH公钥
+- name: Create OpenSSH keypair for root
+  openssh_keypair:
+    path: /root/.ssh/id_rsa
+    type: rsa
+    state: present
+    owner: root
+
+# 修改/opt目录权限
+- name: Change permissions of /opt
+  file:
+    path: /opt
+    state: directory
+    mode: '0755'
+    owner: gbase
+    group: gbase
+    recurse: true
+
+#yum源安装
+- name: Install Package
+  package:
+    name:
+      - vim
+      - wget
+      - nc
+      - net-tools
+      - yum-utils
+      - lrzsz
+      - gcc
+      - bc
+      - bzip2
+      - libcgroup
+      - lsof
+      - gdb
+      - expect
+      - libcgroup-devel
+      - libcgroup-pam
+      - libcgroup-tools
+      - numactl
+      - sshpass
+      - rsync
+    state: present
+
+# root用户SSH密钥分发
+- name: Copy root SSH public key to other hosts
+  shell: sshpass -p {{ root_os_password }} ssh-copy-id -o StrictHostKeyChecking=no root@{{ item }}
+  with_items: "{{ groups['all'] }}"
+
+# gbase用户SSH密钥分发
+- name: Copy gbase SSH public key to other hosts
+  shell: sshpass -p {{ gbase_os_password }} ssh-copy-id -o StrictHostKeyChecking=no gbase@{{ item }}
+  with_items: "{{ groups['all'] }}"
+  become: yes
+  become_user: gbase
+
+# 上传文件
+- name: SetSysEnv.py
+  copy:
+    src: SetSysEnv.py
+    dest: /tmp
+    owner: gbase
+    group: gbase
+    mode: '0644'
+
+# 执行SetSysEnv文件
+- name: Execute Python script
+  command: 
+    "python /tmp/SetSysEnv.py --installPrefix=/opt --dbaUser=gbase --cgroup"
+
+
+# 修改/etc/rc.d/rc.local权限
+- name: Change permissions of /etc/rc.d/rc.local
+  file:
+    path: /etc/rc.d/rc.local
+    mode: '0755'
+
+#启动rc-local服务
+# - name: started service a rc-local
+#   systemd:
+#     name: rc-local
+#     state: started
+#     enabled: yes
+
+# 配置开机启动
+- name: Add gcluster_services on rc.local
+  lineinfile:
+    dest: /etc/rc.d/rc.local
+    line: "su - gbase -c gcluster_services all start"
+    insertafter: EOF
+    state: present

@@ -1,0 +1,6 @@
+[all]
+192.168.111.11  hostname=master01
+192.168.111.12  hostname=master02
+192.168.111.13  hostname=master03
+192.168.111.14  hostname=node01
+192.168.111.15  hostname=node02

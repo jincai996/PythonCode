@@ -1,0 +1,6 @@
+# ---
+# handlers file for gbase_role
+handlers:
+  - name: clean yum cache
+    debug:
+      msg: "This is a debug message"

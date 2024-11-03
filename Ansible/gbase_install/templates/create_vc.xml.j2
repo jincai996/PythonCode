@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding="utf-8"?>
+<servers>
+
+{% for host in groups['data'] %}
+    <rack>
+        <node ip="{{ hostvars[host]['Private_Ip1'] }}"/>
+        <node ip="{{ hostvars[host]['Private_Ip2'] }}"/>
+    </rack>
+{% endfor %}
+
+    <vc_name name="{{ vc_name }}"/>
+    <comment message="{{ vc_name }}"/>
+</servers>

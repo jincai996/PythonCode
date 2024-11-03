@@ -1,0 +1,20 @@
+# 配置my.cnf
+- name: my.cnf
+  template:
+    src: my.cnf.j2
+    dest: /etc/my.cnf
+    owner: mysql
+    group: mysql
+
+# 初始化mysql
+- name: Init mysql server
+  shell: "/mysql/mysoft/mysql-8.4.3-linux-glibc2.28-x86_64/bin/mysqld --user=mysql --basedir=/mysql/mysoft/mysql-8.4.3-linux-glibc2.28-x86_64/ --datadir=/mysql/mydata/3306/data --log_error=/mysql/mydata/3306/data/init.log --initialize"
+  become: true
+  become_user: mysql
+
+# 修改环境变量
+- name: Append a line to config file
+  ansible.builtin.lineinfile:
+    path: /home/mysql/.bash_profile
+    line: 'export PATH=/usr/bin:/mysql/mysoft/mysql-8.4.3-linux-glibc2.28-x86_64/bin/'
+    insertafter: EOF

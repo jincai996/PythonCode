@@ -1,0 +1,39 @@
+---
+###############################
+# sudo ansible-playbook -i hosts site.yml
+###############################
+- name: Main playbook1
+  hosts: all
+  gather_facts: no
+  vars_files:
+    - vars/main.yml
+  tasks:
+    - name: 安装前准备
+      import_tasks: tasks/prepare.yml
+
+- name: Main playbook2
+  hosts: all
+  gather_facts: no
+  vars_files:
+    - vars/main.yml
+  tasks:
+    - name: 上传软件
+      import_tasks: tasks/upload.yml
+
+- name: Main playbook3
+  hosts: all
+  gather_facts: no
+  vars_files:
+    - vars/main.yml
+  tasks:
+    - name: 安装
+      import_tasks: tasks/install.yml
+
+- name: Main playbook4
+  hosts: all
+  gather_facts: no
+  vars_files:
+    - vars/main.yml
+  tasks:
+    - name: 初始化
+      import_tasks: tasks/initdatabase.yml
