@@ -1,0 +1,24 @@
+---
+# vars file for gbase_role
+root_os_password: '123456'
+
+gbase_os_password: '123456'
+
+dba_password: 'dba123'
+
+software_version: 'GBase8a_MPP_Cluster-NoLicense-9.5.3.28.18-redhat8-x86_64.tar.bz2'
+
+###############################
+
+installPrefix: '/opt'
+coordinateHost: '192.168.111.11,192.168.111.12,192.168.111.13'
+coordinateHostNodeID: '11,12,13'
+dataHost: '192.168.111.14,192.168.111.15'
+gcwareHost: '192.168.111.11,192.168.111.12,192.168.111.13'
+gcwareHostNodeID: '11,12,13'
+dbaPwd: '123456'
+characterSet: 'utf8mb4'
+
+
+###############################
+vc_name: 'sysvc'

@@ -1,0 +1,80 @@
+#################多VC模式####################################
+# 生成create_vc.xml文件    
+- name: create_vc.xml
+  template: 
+    src: create_vc.xml.j2
+    dest: /opt/gbase_workspace/setup/gcinstall/create_vc.xml
+    owner: gbase
+    group: gbase
+  tags:
+    - virtual
+
+# 执行create_vc.xml 
+- name:  gcadmin createvc
+  shell: |
+    source ~/.bash_profile &&
+    cd /opt/gbase_workspace/setup/gcinstall &&
+    gcadmin createvc create_vc.xml
+  become: true
+  become_user: gbase
+  tags:
+    - virtual
+#################多VC模式####################################
+
+# 生成gcChangeInfo.xml文件
+- name: gcChangeInfo.xml
+  template: 
+    src: gcChangeInfo.xml.j2
+    dest: /opt/gbase_workspace/setup/gcinstall/gcChangeInfo.xml
+    owner: gbase
+    group: gbase
+
+# 执行gcChangeInfo.xml
+- name:  gcadmin distribution
+  shell: 'source /home/gbase/.bash_profile; gcadmin distribution /opt/gbase_workspace/setup/gcinstall/gcChangeInfo.xml p 1 d 1 db_user gbase db_pwd {{ dbaPwd }}'
+  become: true
+  become_user: gbase
+
+# 兼容模式
+- name:  initnodedatamap
+  shell: 'source ~/.bash_profile; gccli -ugbase -pGBase2O11O531 -e" initnodedatamap;"'
+  become: true
+  become_user: gbase
+  tags:
+    - normal
+
+- name:  Set root Password
+  shell: 'source ~/.bash_profile; gccli -ugbase -pGBase2O11O531 -e"set password for root = password(''{{ dba_password }}'');"'
+  become: true
+  become_user: gbase
+  tags:
+    - normal
+
+- name:  Set gbase Password
+  shell: 'source ~/.bash_profile; gccli -ugbase -pGBase2O11O531 -e"set password for gbase = password(''{{ dba_password }}'');"'
+  become: true
+  become_user: gbase
+  tags:
+    - normal
+
+# 多VC模式
+- name:  initnodedatamap
+  shell: 'source ~/.bash_profile; gccli -ugbase -pGBase2O11O531 -D{{ vc_name }}. -e" initnodedatamap;"'
+  become: true
+  become_user: gbase
+  tags:
+    - virtual
+
+- name:  Set root Password
+  shell: 'source ~/.bash_profile; gccli -ugbase -pGBase2O11O531 -D{{ vc_name }}. -e"set password for root = password(''{{ dba_password }}'');"'
+  become: true
+  become_user: gbase
+  tags:
+    - virtual
+
+- name:  Set gbase Password
+  shell: 'source ~/.bash_profile; gccli -ugbase -pGBase2O11O531 -D{{ vc_name }}. -e"set password for gbase = password(''{{ dba_password }}'');"'
+  become: true
+  become_user: gbase
+  tags:
+    - virtual

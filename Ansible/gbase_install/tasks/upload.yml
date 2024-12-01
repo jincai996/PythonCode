@@ -1,0 +1,39 @@
+# 创建Gbase安装路径
+- name: Create directory /opt/gbase_workspace/setup
+  file:
+    path: "{{ item }}"
+    owner: gbase
+    group: gbase
+    mode: '0755'
+    state: directory
+  with_items:
+    - /opt/gbase_workspace/setup
+    - /opt/gbase_workspace/tools
+
+# 上传GBase8a、C3、SetSysEnv
+- name: Upload Files
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: '0644'
+  with_items:
+      - { src: 'c3-5.1.2-1.noarch.rpm', dest: '/opt/gbase_workspace/tools' }
+      - { src: "{{ software_version }}", dest: '/tmp' }
+      - { src: 'SetSysEnv.py', dest: '/tmp' }
+
+# 安装C3工具
+- name: Install C3.rpm 
+  shell: "cd /opt/gbase_workspace/tools; rpm -Uvh --nodeps --force c3-5.1.2-1.noarch.rpm "
+
+# 配置C3.conf
+- name: c3.conf
+  template: 
+    src: c3.conf.j2
+    dest: /etc/c3.conf
+
+# 解压软件包
+- name: Extract Gbase tarball
+  unarchive:
+    src: "/tmp/{{ software_version }}"
+    dest: /opt/gbase_workspace/setup
+    remote_src: yes

@@ -1,0 +1,15 @@
+# 生成demo.options文件
+- name: demo.options
+  template: 
+    src: demo.options.j2
+    dest: /opt/gbase_workspace/setup/gcinstall/demo.options
+    owner: gbase
+    group: gbase
+
+# 执行gcinstall.py
+- name:  python gcinstall.py
+  shell: |
+    cd /opt/gbase_workspace/setup/gcinstall &&
+    echo -e "Y\nY\nY" | /usr/bin/python gcinstall.py --silent=demo.options -i
+  become: true
+  become_user: gbase

@@ -1,0 +1,61 @@
+---
+###############################
+# Centos8 单实例部署
+# sudo ansible-playbook -i hosts site.yml --skip-tags normal    虚拟模式
+# sudo ansible-playbook -i hosts site.yml --skip-tags virtual   兼容模式
+###############################
+- name: Main playbook1
+  hosts: all
+  gather_facts: no
+  vars_files:
+    - vars/main.yml
+  tasks:
+    - name: 安装前准备
+      import_tasks: tasks/prepare.yml
+
+- name: Main playbook2
+  hosts: all
+  gather_facts: no
+  vars_files:
+    - vars/main.yml
+  tasks:
+    - name: 上传软件
+      import_tasks: tasks/upload.yml
+
+- name: Main playbook3
+  hosts: all
+  gather_facts: no
+  vars_files:
+    - vars/main.yml
+  tasks:
+    - name: 第一次执行SetSysEnv.py
+      command: 
+        "python /tmp/SetSysEnv.py --installPrefix=/opt --dbaUser=gbase --cgroup"
+
+- name: Main playbook4
+  hosts: firstcoor
+  gather_facts: no
+  vars_files:
+    - vars/main.yml
+  tasks:
+    - name: 安装
+      import_tasks: tasks/install.yml
+
+- name: Main playbook5
+  hosts: all
+  gather_facts: no
+  vars_files:
+    - vars/main.yml
+  tasks:
+    - name: 第二次执行SetSysEnvSetSysEnv.py
+      command: 
+        "python /tmp/SetSysEnv.py --installPrefix=/opt --dbaUser=gbase --cgroup"
+
+- name: Main playbook6
+  hosts: firstcoor
+  gather_facts: no
+  vars_files:
+    - vars/main.yml
+  tasks:
+    - name: 初始化
+      import_tasks: tasks/initdatabase.yml

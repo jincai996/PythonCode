@@ -1,0 +1,95 @@
+#创建Gbase用户
+- name: Create SSH key for user gbase in ~gbase/.ssh/id_rsa
+  user:
+    name: gbase
+    state: present
+    generate_ssh_key: yes
+    ssh_key_file: .ssh/id_rsa
+    expires: -1
+    password: "{{ gbase_os_password |  password_hash('sha512') }}"
+
+#创建SSH公钥
+- name: Create OpenSSH keypair for root
+  openssh_keypair:
+    path: /root/.ssh/id_rsa
+    type: rsa
+    state: present
+    owner: root
+
+# 修改/opt目录权限
+- name: Change permissions of /opt
+  file:
+    path: /opt
+    state: directory
+    mode: '0755'
+    owner: gbase
+    group: gbase
+    recurse: true
+
+# dnf源安装
+- name: Install Package
+  package:
+    name:
+      - vim
+      - wget
+      - nc
+      - net-tools
+      - yum-utils
+      - lrzsz
+      - gcc
+      - bc
+      - bzip2
+      - libcgroup
+      - lsof
+      - gdb
+      - expect
+      # - libcgroup-devel
+      - libcgroup-pam
+      - libcgroup-tools
+      - numactl
+      - sshpass
+      - rsync
+      - ncurses-compat-libs
+      - python2
+    state: present
+
+# 创建Python2 软连接 CentOS8
+- name: Create a symbolic link
+  file:
+    src: /usr/bin/python2
+    dest: /usr/bin/python
+    state: link
+
+# root用户SSH密钥分发
+- name: Copy root SSH public key to other hosts
+  shell: sshpass -p {{ root_os_password }} ssh-copy-id -o StrictHostKeyChecking=no root@{{ item }}
+  with_items: "{{ groups['all'] }}"
+
+# gbase用户SSH密钥分发
+- name: Copy gbase SSH public key to other hosts
+  shell: sshpass -p {{ gbase_os_password }} ssh-copy-id -o StrictHostKeyChecking=no gbase@{{ item }}
+  with_items: "{{ groups['all'] }}"
+  become: yes
+  become_user: gbase
+
+# 修改/etc/rc.d/rc.local权限
+- name: Change permissions of /etc/rc.d/rc.local
+  file:
+    path: /etc/rc.d/rc.local
+    mode: '0755'
+
+# 配置gcluster_services开机启动
+- name: Add gcluster_services on rc.local
+  lineinfile:
+    dest: /etc/rc.d/rc.local
+    line: 'su - gbase -c "gcluster_services all start"'
+    insertafter: EOF
+    state: present
+
+# 配置gcware_services开机启动
+- name: Add gcware_services on rc.local
+  lineinfile:
+    dest: /etc/rc.d/rc.local
+    line: 'su - gbase -c "gcware_services all start"'
+    insertafter: EOF
+    state: present

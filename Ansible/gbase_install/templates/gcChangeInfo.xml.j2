@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<servers>
+{% for data_ip in groups['data'] %}
+    <rack>
+        <node ip="{{ data_ip }}"/>
+    </rack>
+{% endfor %}
+</servers>
