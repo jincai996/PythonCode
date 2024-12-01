@@ -16,6 +16,11 @@ CREATE TABLE IF NOT EXISTS stock_individual_info (
 
 LOAD DATA INFILE 'file://192.168.31.35/tmp/stock_individual_info.txt' INTO TABLE stock_individual_info DATA_FORMAT 3 FIELDS TERMINATED BY '|';
 
+LOAD DATA INFILE 'ftp://root:123456@192.168.111.89///var/ftp/pub/stock_individual_info.txt' INTO TABLE stock_individual_info DATA_FORMAT 3 FIELDS TERMINATED BY '|';
+
+LOAD DATA INFILE 'sftp://king:123456@192.168.111.89/var/ftp/pub/stock_individual_info.txt' INTO TABLE stock_individual_info DATA_FORMAT 3 FIELDS TERMINATED BY '|';
+
+LOAD DATA INFILE 'sftp://king:123456@192.168.111.89/tmp/stock_individual_info.txt' INTO TABLE stock_individual_info DATA_FORMAT 3 FIELDS TERMINATED BY '|';
 
 --02实时行情数据-东财
 DROP TABLE stock_zh_a_spot;
