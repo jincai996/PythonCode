@@ -1,0 +1,8 @@
+---
+# vars file for gbase_role
+root_os_password: '123456'
+
+
+
+JAVA_HOME: '/usr'
+HADOOP_HOME: '/opt/hadoop-3.3.6'

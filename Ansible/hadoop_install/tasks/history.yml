@@ -1,0 +1,4 @@
+# 启动历史服务器
+- name:  historyserver
+  shell: |
+    source ~/.bash_profile && bash /opt/hadoop-3.3.6/bin/mapred --daemon start historyserver

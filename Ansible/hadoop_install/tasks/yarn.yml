@@ -1,0 +1,5 @@
+# 启动YARN
+- name:  start-yarn.sh
+  shell: |
+    # source ~/.bash_profile && bash /opt/hadoop-3.3.6/sbin/start-yarn.sh
+    source ~/.bash_profile && bash /opt/hadoop-3.3.6/bin/yarn --daemon start resourcemanager

@@ -1,0 +1,9 @@
+# 初始化HADOOP
+- name:  hdfs format
+  shell: |
+    source ~/.bash_profile && bash /opt/hadoop-3.3.6/bin/hdfs namenode -format
+
+# 启动HADOOP
+- name:  start-dfs.sh
+  shell: |
+    source ~/.bash_profile && bash /opt/hadoop-3.3.6/sbin/start-dfs.sh

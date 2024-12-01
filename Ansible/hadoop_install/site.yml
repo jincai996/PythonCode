@@ -1,0 +1,40 @@
+---
+###############################
+# sudo ansible-playbook -i hosts site.yml --skip-tags normal    虚拟模式
+# sudo ansible-playbook -i hosts site.yml --skip-tags virtual   兼容模式
+###############################
+- name: Main playbook1
+  hosts: all
+  gather_facts: no
+  vars_files:
+    - vars/main.yml
+  tasks:
+    - name: 安装准备
+      import_tasks: tasks/prepare.yml
+
+- name: Main playbook2
+  hosts: namenode
+  gather_facts: no
+  vars_files:
+    - vars/main.yml
+  tasks:
+    - name: 启动HDFS
+      import_tasks: tasks/hdfs.yml
+
+- name: Main playbook3
+  hosts: yarn
+  gather_facts: no
+  vars_files:
+    - vars/main.yml
+  tasks:
+    - name: 启动YARN
+      import_tasks: tasks/yarn.yml
+
+- name: Main playbook4
+  hosts: secondarynamenode
+  gather_facts: no
+  vars_files:
+    - vars/main.yml
+  tasks:
+    - name: 启动历史服务器
+      import_tasks: tasks/history.yml

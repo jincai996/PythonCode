@@ -1,0 +1,73 @@
+# 上传软件包
+- name: Upload File
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: '0644'
+    force: yes
+  with_items:
+      - { src: 'hadoop-3.3.6.tar.gz', dest: '/tmp' }
+      - { src: 'hosts', dest: '/etc' }
+
+# 创建root用户SSH公钥
+- name: Create OpenSSH keypair for root
+  openssh_keypair:
+    path: /root/.ssh/id_rsa
+    type: rsa
+    state: present
+    owner: root
+
+# root用户SSH密钥分发
+- name: Copy root SSH public key to other hosts
+  shell: sshpass -p {{ root_os_password }} ssh-copy-id -o StrictHostKeyChecking=no root@{{ item }}
+  with_items: "{{ groups['all'] }}"
+
+# 解压软件包
+- name: Extract Gbase tarball
+  unarchive:
+    src: /tmp/hadoop-3.3.6.tar.gz
+    dest: /opt
+    remote_src: yes
+
+# core-site.xml
+- name: core-site.xml
+  template: 
+    src: core-site.xml.j2
+    dest: "{{ HADOOP_HOME }}/etc/hadoop/core-site.xml"
+    
+# hdfs-site.xml
+- name: hdfs-site.xml
+  template: 
+    src: hdfs-site.xml.j2
+    dest: "{{ HADOOP_HOME }}/etc/hadoop/hdfs-site.xml"
+
+# mapred-site.xml
+- name: mapred-site.xml
+  template: 
+    src: mapred-site.xml.j2
+    dest: "{{ HADOOP_HOME }}/etc/hadoop/mapred-site.xml"
+
+# yarn-site.xml
+- name: yarn-site.xml
+  template: 
+    src: yarn-site.xml.j2
+    dest: "{{ HADOOP_HOME }}/etc/hadoop/yarn-site.xml"        
+
+# hadoop-env.sh
+- name: hadoop-env.sh
+  template: 
+    src: hadoop-env.sh.j2
+    dest: "{{ HADOOP_HOME }}/etc/hadoop/hadoop-env.sh"
+
+# .bash_profile
+- name: .bash_profile
+  template: 
+    src: .bash_profile.j2
+    dest: "/root/.bash_profile"
+
+# workers
+- name: workers
+  template: 
+    src: workers.j2
+    dest: "{{ HADOOP_HOME }}/etc/hadoop/workers"
+    
