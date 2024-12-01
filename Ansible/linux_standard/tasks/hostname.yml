@@ -1,8 +1,0 @@
-- name: Set hostname based on IP
-  hostname:
-    name: "{{ hostname }}"
-
-- name: Edit /etc/hosts
-  template: 
-    src: hosts.j2
-    dest: /etc/hosts
