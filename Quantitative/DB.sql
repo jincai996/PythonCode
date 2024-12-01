@@ -1,4 +1,4 @@
-gccli -ugbase -pX@gbase2018 -Dvcname000001.mydb -f < /tmp/1.sql
+gccli -ugbase -pX@gbase2018 -Dvcname000001.mydb -f < /tmp/test.sql
 
 --01个股信息查询
 DROP TABLE stock_individual_info;
