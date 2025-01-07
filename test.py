@@ -12,3 +12,7 @@ git push
 从githup拉取
 git pull
 """
+
+import socket
+
+print(socket.gethostname())
